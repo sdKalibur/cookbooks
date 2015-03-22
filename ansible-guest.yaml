@@ -1,7 +1,7 @@
 ---
 #ansibler_ssh_user:root
 -name:target hosts
--hosts:Lamp_servers
+-hosts:lampservers
   user:root
   remote_user:root
 
