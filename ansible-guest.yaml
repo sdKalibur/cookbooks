@@ -1,17 +1,17 @@
 ---
 ansibler_ssh_user:root
--name : target hosts
--hosts: Lamp_servers
+-name:target hosts
+-hosts:Lamp_servers
   user:root
-  remote_user=root
+  remote_user:root
 
- -name: yum check updates
- yum: name=* state=latest
- -name: install latest apache version
- yum: name=httpd state=latest update_cache=yes
- -name: install latest mysql
- yum: name=mysql state=latest
- -name install php5
- yum: name=php state=latest
- service: name=mysql state=started enabled=yes
- service: name=mysql state=started enabled=yes
+ -name:yum check updates
+ yum:name=* state=latest
+ -name:install latest apache version
+ yum:name=httpd state=latest update_cache=yes
+ -name:install latest mysql
+ yum:name=mysql state=latest
+ -name:install php5
+ yum:name=php state=latest
+ service:name=mysql state=started enabled=yes
+ service:name=mysql state=started enabled=yes
