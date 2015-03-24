@@ -38,7 +38,7 @@
     command: sed -i "s/#DocumentRoot "/var/www/html"/DocumentRoot "/var/www/html"/g" /etc/httpd/conf.d/ssl.conf  
 # Getting Word Press
   - name: Get latest WordPress
-    command: [ -d /opt/wordpress ] || mkdir -p /opt/wordpress
+    command: mkdir -p /opt/wordpress
     command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress/
     command: tar -xzvf /opt/wordpress/latest.tar.gz
   - name: Setting up Wordpress Webserver 
