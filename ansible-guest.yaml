@@ -3,8 +3,8 @@
   tasks:
   - name: 'yum check updates'
     yum: name=* state=latest
-  - name: 'install latest apache version'
-    yum: pkg=httpd state=latest
+  - name: 'install latest apache version and SSL Module'
+    yum: pkg=httpd,mod_ssl state=latest
   - name: 'install latest mysql'
     yum: pkg=mysql state=latest
   - name: 'install php5'
@@ -25,4 +25,9 @@
     service: name=iptables state=restarted enabled=yes
   - name: Show effect firewall rules
     command: /sbin/iptables -L --line-numbers -n
-
+# ssl cert
+# NameVirtualHost *:443
+# touch `hostname`.crt
+# create virtual host ansible module
+# opnssl genrsa -out sitename.key 2048
+# openssl req -new -key sitename.key -out sitename.csr
