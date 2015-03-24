@@ -29,7 +29,8 @@
   - name: Show effective firewall rules
     command: /sbin/iptables -L --line-numbers -n
   - name: Creating SSL Certificate
-    command: [ -d /etc/httpd/ssl ] || mkdir -p /etc/httpd/ssl
+#   command: [-d /etc/httpd/ssl] || mkdir -p /etc/httpd/ssl
+    command: mkdir -p /etc/httpd/ssl
     command: /usr/bin/openssl req -nodes -x509 -newkey rsa:2048 -keyout /etc/httpd/ssl/`hostname`-key.pem -out /etc/httpd/ssl/`hostname`-cert.crt -days 730 -subj /C=UK/ST=Surrey/L=London/O=Support/CN=`hostname`
  -  name: Configuring SSL Webserver
 # Edit virtual host variables
