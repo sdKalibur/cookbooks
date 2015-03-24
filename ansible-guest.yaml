@@ -3,31 +3,64 @@
   tasks:
   - name: 'yum check updates'
     yum: name=* state=latest
-  - name: 'install latest apache version and SSL Module'
-    yum: pkg=httpd,mod_ssl state=latest
-  - name: 'install latest mysql'
-    yum: pkg=mysql state=latest
-  - name: 'install php5'
-    yum: pkg=php state=latest
+  - name: install latest apache, wget and Apache mod_ssl
+    yum: pkg=httpd,mod_ssl,wget state=latest
+  - name: 'install latest Mysql Server'
+    yum: pkg=mysql-server state=latest
+  - name: 'Enable and restart Mysql Server' 
+    service: name=mysqld state=started enabled=yes    
+  - name: install php5
+    yum: pkg=php,php-gd state=latest
   - name: 'Enable and restart Apache Webserver' 
     service: name=httpd state=restarted enabled=yes
 # Firewall Rules
   - name: Flush currest firewall rules
     command: /sbin/iptables -F
   - name: ALL SSH on port 22
-    command: /sbin/iptables -I INPUT -p tcp --dport 22 -j ACCEPT 
+    command: /sbin/iptables -I INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT 
   - name: Allow HTTPS on port 443
-    command: /sbin/iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+    command: /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+    command: /sbin/iptables INPUT -P -j DROP
   - name: Save iptables rules  
     command: service iptables save
 # Restart firewall
   - name: Enable and restart firewall rules
     service: name=iptables state=restarted enabled=yes
-  - name: Show effect firewall rules
+  - name: Show effective firewall rules
     command: /sbin/iptables -L --line-numbers -n
-# ssl cert
+  - name: Creating SSL Certificate
+    command: [ -d /etc/httpd/ssl ] || mkdir -p /etc/httpd/ssl
+    command: /usr/bin/openssl req -nodes -x509 -newkey rsa:2048 -keyout /etc/httpd/ssl/`hostname`-key.pem -out /etc/httpd/ssl/`hostname`-cert.crt -days 730 -subj /C=UK/ST=Surrey/L=London/O=Support/CN=`hostname`
+ -  name: Configuring SSL Webserver
+# Edit virtual host variables
+    command: sed -i.`date +%d%m%C%y` "s/#ServerName www.example.com/ServerName `hostname`:443/g" /etc/httpd/conf.d/ssl.conf
+  command: sed -i "s/#DocumentRoot "/var/www/html"/DocumentRoot "/var/www/html"/g" /etc/httpd/conf.d/ssl.conf  
+# Getting Word Press
+  - name: Get latest WordPress
+    command: [ -d /opt/wordpress ] || mkdir -p /opt/wordpress
+    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress/
+    command: tar -xzvf /opt/wordpress/latest.tar.gz
+  - name: Setting up Wordpress Webserver 
+    command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
+    command: sed -i.`date +%d%m%C%y` "s/database_name_here/wordpress/g" /opt/wordpress/wp-config.php
+    command: sed -i "s/username_here/wordpress/g" /opt/wordpress/wp-config.php
+    command: sed -i "s/password_here/wordpress/g" /opt/wordpress/wp-config.php
+    command: cp -r /opt/wordpress/*[!latest.tar.gz] /var/www/html
+# Setting up Word Press Database
+  - name:  Setup WordPress Mysql Database
+    command: mysql -u root "CREATE DATABASE wordpress"
+  - name: Create "Wordpress" user
+    name: mysql -u root "CREATE USER wordpress@localhost"
+    command: mysql -u root "SET PASSWORD FOR wordpress@localhost= PASSWORD("wordpress")"
+    command: mysql -u root "GRANT ALL PRIVILEGES ON wordpress.* TO worpress@localhost IDENTIFIED BY 'password'"
+    command: mysql -u root "FLUSH PRIVILEGES"
+# Restart Apache Webserver
+  - name: Activating Word Press website
+    service: name=httpd state=restarted enabled=yes
+# ssl cert 
+# /etc/httpd/conf.d/ssl.comf
 # NameVirtualHost *:443
 # touch `hostname`.crt
-# create virtual host ansible module
+# create virtual host ansible module`date +%d%m%C%y`
 # opnssl genrsa -out sitename.key 2048
 # openssl req -new -key sitename.key -out sitename.csr
