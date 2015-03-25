@@ -4,7 +4,7 @@
   - name: 'yum check updates'
     yum: name=* state=latest
   - name: install latest apache, wget and Apache mod_ssl
-    yum: pkg=httpd,mod_ssl,wget state=latest
+    yum: pkg=httpd,mod_ssl,wget,python-urllib2_kerberos state=latest
   - name: 'install latest Mysql Server'
     yum: pkg=mysql-server state=latest
   - name: 'Enable and restart Mysql Server' 
@@ -16,10 +16,12 @@
 # Firewall Rules
   - name: Flush currest firewall rules
     command: /sbin/iptables -F
+  - name: Iptables allow related and established connections
+    command: /sbin/iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
   - name: ALL SSH on port 22
-    command: /sbin/iptables -I INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT 
+    command: /sbin/iptables -I INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT 
   - name: Allow HTTPS on port 443
-    command: /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+    command: /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
   - name: Append Drop all firewall rule
     command: /sbin/iptables -A INPUT -j DROP
   - name: Save iptables rules  
@@ -42,10 +44,10 @@
   - name: Get latest WordPress
     command: mkdir -p /opt/wordpress
   - name: Downloading Word Press
-    get_url: url=http://wordpress.org/latest.tar.gz dest=/opt/wordpress/latest.tar.gz
+    get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/wordpress/latest.tar.gz force=yes
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
   - name: Extracting Wordpress Tarball gzip file
-    unarchive: src=/opt/wordpress/latest.tar.gz dest=/opt/wordpress/ -v
+    unarchive: src=/opt/wordpress/latest.tar.gz dest=/opt/wordpress/
 #    command: /bin/tar -xzf /opt/wordpress/latest.tar.gz
   - name: Setting up Wordpress Webserver 
     command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
