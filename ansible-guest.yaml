@@ -42,8 +42,9 @@
   - name: Get latest WordPress
     command: mkdir -p /opt/wordpress
   - name: Downloading Word Press
-    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress/
-    command: tar -xzvf /opt/wordpress/latest.tar.gz
+    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
+    name: Extracting Wordpress Tarball gzip file
+    command: /bin/tar -xzf /opt/wordpress/latest.tar.gz
   - name: Setting up Wordpress Webserver 
     command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
     command: sed -i.`date +%d%m%C%y` "s/database_name_here/wordpress/g" /opt/wordpress/wp-config.php
