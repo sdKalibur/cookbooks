@@ -3,6 +3,9 @@
   tasks:
   - name: 'yum check updates'
     yum: name=* state=latest
+  - name: Get latest WordPress
+    get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/latest.tar.gz force=yes validate_certs=no
+#    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
   - name: install latest apache, wget and Apache mod_ssl
     yum: pkg=httpd,mod_ssl,wget state=latest
   - name: 'install latest Mysql Server'
