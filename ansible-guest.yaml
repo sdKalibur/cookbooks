@@ -44,14 +44,16 @@
   - name: Get latest WordPress
     get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
-  - name: Extracting Wordpress Tarball gzip file
-    unarchive: src='/opt/latest.tar.gz' dest='/opt' mode=0644 owner=root
+    tasks:  
+    - name: Extracting Wordpress Tarball gzip file
+      unarchive: src='/opt/latest.tar.gz' dest='/opt' mode=0644 owner=root
 #    command: /bin/tar -xzf /opt/wordpress/latest.tar.gz
-  - name: Setting up Wordpress Webserver 
-    command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
-    command: sed -i.`date +%d%m%C%y` "s/database_name_here/wordpress/g" /opt/wordpress/wp-config.php
-    command: sed -i "s/username_here/wordpress/g" /opt/wordpress/wp-config.php
-    command: sed -i "s/password_here/wordpress/g" /opt/wordpress/wp-config.php
+      tasks:
+      - name: Setting up Wordpress Webserver 
+        command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
+        command: sed -i.`date +%d%m%C%y` "s/database_name_here/wordpress/g" /opt/wordpress/wp-config.php
+        command: sed -i "s/username_here/wordpress/g" /opt/wordpress/wp-config.php
+        command: sed -i "s/password_here/wordpress/g" /opt/wordpress/wp-config.php
   - name: Populate WordPress Website
     command: cp -r /opt/wordpress/* /var/www/html
 # Setting up Word Press Database
