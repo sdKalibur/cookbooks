@@ -1,11 +1,11 @@
 ---
 - hosts: lampservers
+  connection: local
   tasks:
   - name: 'yum check updates'
     yum: name=* state=latest
   - name: Get latest WordPress
     get_url: url=https://wordpress.org/latest.tar.gz dest=/root/latest.tar.gz force=yes validate_certs=no
-#    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
   - name: install latest apache, wget and Apache mod_ssl
     yum: pkg=httpd,mod_ssl,wget state=latest
   - name: 'install latest Mysql Server'
@@ -47,21 +47,22 @@
 #  - name: Get latest WordPress
 #    get_url: url=https://wordpress.org/latest.tar.gz dest=/root/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
-#  - name: Create wordpress extraction directory
-#    command: mkdir -p /opt/wordpress
   - name: Extracting Wordpress Tarball gzip file
-  - unarchive: "src=/root/latest.tar.gz dest=/opt/wordpress mode=0644 owner=root"
+    unarchive: copy="no" src="/root/latest.tar.gz" dest="/opt/wordpress/" owner="root" mode="0655"
 #  - name: Dirty extract command 
 #    command: "tar -xvzf /root/latest.tar.gz"
 #  - name: Copying to /opt/wordpress
 #    command: mv /root/wordpress /opt/wordpress
   - name: Setting up Wordpress Webserver 
-    command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
-    command: sed -i.`date +%d%m%C%y` "s/database_name_here/wordpress/g" /opt/wordpress/wp-config.php
-    command: sed -i "s/username_here/wordpress/g" /opt/wordpress/wp-config.php
-    command: sed -i "s/password_here/wordpress/g" /opt/wordpress/wp-config.php
+    command: cp -f /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
+  - name: Start Editing the sample file
+    command: sed -i.backup 's/database_name_here/wordpress/g' /opt/wordpress/wp-config.php
+  - name: Set username
+    command: sed -i 's/username_here/wordpress/g' /opt/wordpress/wp-config.php
+  - name: Set password
+    command: sed -i 's/password_here/wordpress/g' /opt/wordpress/wp-config.php
   - name: Populate WordPress Website
-    command: cp -r /opt/wordpress/* /var/www/html
+    command: cp -rf /opt/wordpress/* /var/www/html
 # Setting up Word Press Database
   - name:  Setup WordPress Mysql Database
     command: mysql -u root "CREATE DATABASE wordpress"
