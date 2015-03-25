@@ -44,7 +44,7 @@
   - name: Get latest WordPress
     command: mkdir -p /opt/wordpress
   - name: Downloading Word Press
-    get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/wordpress/latest.tar.gz force=yes
+    get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/wordpress/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
   - name: Extracting Wordpress Tarball gzip file
     unarchive: src=/opt/wordpress/latest.tar.gz dest=/opt/wordpress/
