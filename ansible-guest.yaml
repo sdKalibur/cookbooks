@@ -29,7 +29,6 @@
     service: name=iptables state=restarted enabled=yes
   - name: Show effective firewall rules
     command: /sbin/iptables -L --line-numbers -n
-  - name: Creating SSL Certificate
 #   command: [-d /etc/httpd/ssl] || mkdir -p /etc/httpd/ssl
   - name: Making SSL path
     command: mkdir -p /etc/httpd/ssl
