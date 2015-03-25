@@ -52,7 +52,7 @@
   - name: Extracting Wordpress Tarball gzip file
 #    unarchive: src=/opt/latest.tar.gz dest=/opt/wordpress mode=0644 owner=root
   - name: Dirty extract command 
-    local_action: command /bin/tar -xvzf latest.tar.gz -C /opt/
+    command: "tar -xvzf latest.tar.gz -C /opt/"
   - name: Setting up Wordpress Webserver 
     command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
     command: sed -i.`date +%d%m%C%y` "s/database_name_here/wordpress/g" /opt/wordpress/wp-config.php
