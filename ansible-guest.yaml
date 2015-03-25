@@ -44,6 +44,8 @@
   - name: Get latest WordPress
     get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
+  - name: Create wordpress extraction directory
+    command: mkdir -p /opt/wordpress
   - name: Extracting Wordpress Tarball gzip file
     unarchive: src=/opt/latest.tar.gz dest=/opt/wordpress mode=0644 owner=root
   - name: Dirty extract command 
