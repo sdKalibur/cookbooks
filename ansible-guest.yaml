@@ -44,13 +44,13 @@
     command: sed -i.`date +%d%m%C%y` "s/#ServerName www.example.com/ServerName `hostname`:443/g" /etc/httpd/conf.d/ssl.conf
     command: sed -i "s/#DocumentRoot/DocumentRoot/g" /etc/httpd/conf.d/ssl.conf  
 # Getting Word Press
-  - name: Get latest WordPress
-    get_url: url=https://wordpress.org/latest.tar.gz dest=/root/latest.tar.gz force=yes validate_certs=no
+#  - name: Get latest WordPress
+#    get_url: url=https://wordpress.org/latest.tar.gz dest=/root/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
-  - name: Create wordpress extraction directory
-    command: mkdir -p /opt/wordpress
+#  - name: Create wordpress extraction directory
+#    command: mkdir -p /opt/wordpress
   - name: Extracting Wordpress Tarball gzip file
-  - unarchive: src=/root/latest.tar.gz dest=/opt/wordpress mode=0644 owner=root
+  - unarchive: "src=/root/latest.tar.gz dest=/opt/wordpress mode=0644 owner=root"
 #  - name: Dirty extract command 
 #    command: "tar -xvzf /root/latest.tar.gz"
 #  - name: Copying to /opt/wordpress
@@ -73,10 +73,3 @@
 # Restart Apache Webserver
   - name: Activating Word Press website
     service: name=httpd state=restarted enabled=yes
-# ssl cert 
-# /etc/httpd/conf.d/ssl.comf
-# NameVirtualHost *:443
-# touch `hostname`.crt
-# create virtual host ansible module`date +%d%m%C%y`
-# opnssl genrsa -out sitename.key 2048
-# openssl req -new -key sitename.key -out sitename.csr
