@@ -48,7 +48,9 @@
 #    get_url: url=https://wordpress.org/latest.tar.gz dest=/root/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
   - name: Extracting Wordpress Tarball gzip file
-    unarchive: copy="no" src="/root/latest.tar.gz" dest="/opt/wordpress/" owner="root" mode="0655"
+    unarchive: copy="no" src="/root/latest.tar.gz" dest="/opt/wordpress/" owner=root mode=0655
+  - name; Make root own /opt/wordpress
+    command: chown -R root:root /opt/wordpress
 #  - name: Dirty extract command 
 #    command: "tar -xvzf /root/latest.tar.gz"
 #  - name: Copying to /opt/wordpress
