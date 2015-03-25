@@ -20,6 +20,7 @@
     command: /sbin/iptables -I INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT 
   - name: Allow HTTPS on port 443
     command: /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+  - name: Append Drop all firewall rule
     command: /sbin/iptables -A INPUT -j DROP
   - name: Save iptables rules  
     command: service iptables save
@@ -30,8 +31,10 @@
     command: /sbin/iptables -L --line-numbers -n
   - name: Creating SSL Certificate
 #   command: [-d /etc/httpd/ssl] || mkdir -p /etc/httpd/ssl
-    command: mkdir -p /etc/httpd/ssl
-    command: /usr/bin/openssl req -nodes -x509 -newkey rsa:2048 -keyout /etc/httpd/ssl/`hostname`-key.pem -out /etc/httpd/ssl/`hostname`-cert.crt -days 730 -subj /C=UK/ST=Surrey/L=London/O=Support/CN=`hostname`
+  - name: Making SSL path
+   command: mkdir -p /etc/httpd/ssl
+  - name: Self assigning SSL Cert
+   command: /usr/bin/openssl req -nodes -x509 -newkey rsa:2048 -keyout /etc/httpd/ssl/`hostname`-key.pem -out /etc/httpd/ssl/`hostname`-cert.crt -days 730 -subj /C=UK/ST=Surrey/L=London/O=Support/CN=`hostname`
   - name: Configuring SSL Webserver
 # Edit virtual host variables
     command: sed -i.`date +%d%m%C%y` "s/#ServerName www.example.com/ServerName `hostname`:443/g" /etc/httpd/conf.d/ssl.conf
@@ -39,6 +42,7 @@
 # Getting Word Press
   - name: Get latest WordPress
     command: mkdir -p /opt/wordpress
+  - name: Downloading Word Press
     command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress/
     command: tar -xzvf /opt/wordpress/latest.tar.gz
   - name: Setting up Wordpress Webserver 
