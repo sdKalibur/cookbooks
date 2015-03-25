@@ -44,8 +44,8 @@
   - name: Get latest WordPress
     get_url: url=https://wordpress.org/latest.tar.gz dest=/opt/latest.tar.gz force=yes validate_certs=no
 #    command: wget http://wordpress.org/latest.tar.gz -P /opt/wordpress
-  - name: Extracting Wordpress Tarball gzip file
-    unarchive: src=/opt/latest.tar.gz dest=/opt mode=0644 owner=root
+    - name: Extracting Wordpress Tarball gzip file
+      unarchive: src=/opt/latest.tar.gz dest=/opt mode=0644 owner=root
 #    command: /bin/tar -xzf /opt/wordpress/latest.tar.gz
   - name: Setting up Wordpress Webserver 
     command: cp /opt/wordpress/wp-config-sample.php /opt/wordpress/wp-config.php
