@@ -4,7 +4,7 @@
   - name: 'yum check updates'
     yum: name=* state=latest
   - name: install latest apache, wget and Apache mod_ssl
-    yum: pkg=httpd,mod_ssl,wget,python-urllib2_kerberos state=latest
+    yum: pkg=httpd,mod_ssl,wget state=latest
   - name: 'install latest Mysql Server'
     yum: pkg=mysql-server state=latest
   - name: 'Enable and restart Mysql Server' 
